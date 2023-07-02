@@ -123,11 +123,23 @@ server.post('/messages', async (req, res) => {
 
 });
 
-server.get('/messages', (req, res) => {
+server.get('/messages', async (req, res) => {
+    const {user} = req.headers
+    const limit = Number(req.query.limit)
+
+    try{
+        const messages = await db.collection("messages").find().limit(limit).toArray()
+        res.send(messages)
+
+    }catch(error) {
+        console.error(error)
+        res.sendStatus(500)
+    }
+
 
 });
 
-// server.post('/status', (req, res) => {
+// server.post('/status', async (req, res) => {
 
 // });
 
