@@ -103,6 +103,9 @@ server.post('/messages', async (req, res) => {
     }
 
     try {
+       const checkingUser =  await db.collection("participants").findOne({ name: user})
+       if(!checkingUser) return res.status(422).send('Unprocessable Entity')
+
         await db.collection("messages").insertOne({
             from: user,
             to,
@@ -120,9 +123,9 @@ server.post('/messages', async (req, res) => {
 
 });
 
-// server.get('/messages', (req, res) => {
+server.get('/messages', (req, res) => {
 
-// });
+});
 
 // server.post('/status', (req, res) => {
 
