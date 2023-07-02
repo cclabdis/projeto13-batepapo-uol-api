@@ -10,6 +10,10 @@ const participantsSchema = joi.object({
     name: joi.string().required()
 })
 
+const messagesSchema = joi.object({
+
+})
+
 const server = express();
 server.use(cors());
 server.use(json());
@@ -57,7 +61,7 @@ try{
        await db.collection("messages").insertOne({
         from: name,
         to: 'Todos',
-        text: 'Entrou na sala...',
+        text: 'entra na sala...',
         type: 'status',
         time: dayjs().format("HH:mm:ss")
        })
@@ -75,7 +79,7 @@ try{
 server.get('/participants', async (req, res) => {
     try {
         const everyone = await db.collection("participants").find().toArray()
-        res.send(everyone)
+        res.status(201).send(everyone)
     } catch (error) {
         console.error(error)
         res.sendStatus(500)
@@ -84,9 +88,11 @@ server.get('/participants', async (req, res) => {
 
 });
 
-// server.post('/messages', (req, res) => {
+server.post('/messages', (req, res) => {
+    const { to, text, type } = req.body
+    const { user } = req.headers
 
-// });
+});
 
 // server.get('/messages', (req, res) => {
 
@@ -100,7 +106,7 @@ server.get('/participants', async (req, res) => {
 const PORT = 5000
 
 server.listen(PORT, () => {
-    console.log("Rodando");
+    console.log("Rodando")
   });
   
   //fuser -k 4000/tcp//
