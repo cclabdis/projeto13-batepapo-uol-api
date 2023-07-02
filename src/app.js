@@ -59,7 +59,7 @@ try{
         to: 'Todos',
         text: 'Entrou na sala...',
         type: 'status',
-        time: dayjs(datenow).format("HH:MM:SS")
+        time: dayjs().format("HH:mm:ss")
        })
 
        res.status(201).send('Created')
@@ -72,9 +72,17 @@ try{
 
 });
 
-// server.get('/participants', (req, res) => {
+server.get('/participants', async (req, res) => {
+    try {
+        const everyone = await db.collection("participants").find().toArray()
+        res.send(everyone)
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(500)
+    }
 
-// });
+
+});
 
 // server.post('/messages', (req, res) => {
 
