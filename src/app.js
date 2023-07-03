@@ -18,6 +18,8 @@ const messagesSchema = joi.object({
 
 })
 
+const limitSchema = joi.number().min(1)
+
 const server = express();
 server.use(cors());
 server.use(json());
@@ -128,7 +130,23 @@ server.get('/messages', async (req, res) => {
     const limit = Number(req.query.limit)
 
     try{
-        const messages = await db.collection("messages").find().limit(limit).toArray()
+        const messages = await db.collection("messages").find(
+            {
+                $or: [
+                    {from: user},
+                    {to: { $in: ['Todos', user]}}
+                    {type: "message"}
+                ]
+            }
+        ).limit(limit).toArray()
+
+        if(limit){
+            const {error} = limitSchema.validate(limit)
+            if (error || isNaN(limit) || limit == 0)  {
+                return res.status(422).send('Unprocessable Entity')
+            }
+            return res.send(messages.slice(-limit))
+        }
         res.send(messages)
 
     }catch(error) {
