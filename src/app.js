@@ -127,7 +127,7 @@ server.post('/messages', async (req, res) => {
 });
 
 server.get('/messages', async (req, res) => {
-    const {user} = req.headers
+    const { user } = req.headers
     const limit = Number(req.query.limit)
 
     try{
@@ -158,7 +158,7 @@ server.get('/messages', async (req, res) => {
 
 });
 
-server.put('/status', async (req, res) => {
+server.post('/status', async (req, res) => {
 
     const {user} = req.headers
 
