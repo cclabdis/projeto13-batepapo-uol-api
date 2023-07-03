@@ -158,7 +158,7 @@ server.get('/messages', async (req, res) => {
 
 });
 
-server.post('/status', async (req, res) => {
+server.put('/status', async (req, res) => {
 
     const {user} = req.headers
 
@@ -177,6 +177,40 @@ server.post('/status', async (req, res) => {
 
 });
 
+
+setInterval (async () => {
+    const seconds = datenow - 100000
+    try{
+       const inactives = await db.collection("participants").find({
+        lastStatus: {$lte: seconds}
+       }).toArray()
+
+
+       if(inactives.length > 0){
+        const inactiveMessages = inactives.map((participant) => {
+            return {
+                
+                    from: participant.name,
+                    to: 'Todos',
+                    text: 'sai da sala...',
+                    type: 'status',
+                    time: dayjs().format('HH:mm:ss')
+            }
+
+        })
+        await db.collection("messages").insertMany(inactiveMessages)
+        await db.collection("participants").deleteMany(inactives)
+        
+       }
+        
+    }catch(error) {
+        console.error(error)
+        res.Status(500).send('Erro no set interval')
+    }
+
+
+
+})
 
 const PORT = 5000
 
