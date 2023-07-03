@@ -142,9 +142,9 @@ server.get('/messages', async (req, res) => {
         ).limit(limit).toArray()
 
         if(limit){
-            const {error} = limitSchema.validate(limit)
-            if (error ) return res.status(422).send('Unprocessable Entity')
-           
+            if (limit <= 0 || isNaN(limit) )  
+                return res.status(422).send('Unprocessable Entity')
+
             return res.send(messages.slice(-limit))
         }
         res.send(messages)
@@ -166,7 +166,7 @@ server.post('/status', async (req, res) => {
         if (!userExists) return res.status(404).send('Not Found')
 
 
-        await db.collection("participants").updateOne({ name: user }, { $set: {lastStatus: datenow }})
+        await db.collection("participants").updateOne({ name: user }, { $set: {lastStatus: Date.now() }})
         res.status(200).send('Created')
 
     }catch(error) {
@@ -178,7 +178,7 @@ server.post('/status', async (req, res) => {
 
 
 setInterval (async () => {
-    const seconds = datenow - 10000
+    const seconds = Date.now() - 10000
     try{
        const inactives = await db.collection("participants").find({
         lastStatus: {$lte: seconds}
