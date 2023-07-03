@@ -134,7 +134,7 @@ server.get('/messages', async (req, res) => {
             {
                 $or: [
                     {from: user},
-                    {to: { $in: ['Todos', user]}}
+                    {to: { $in: ['Todos', user]}},
                     {type: "message"}
                 ]
             }
