@@ -142,10 +142,8 @@ server.get('/messages', async (req, res) => {
         ).limit(limit).toArray()
 
         if(limit){
-            if (limit <= 0 || isNaN(limit) )  
-                return res.status(422).send('Unprocessable Entity')
-
-            return res.send(messages.slice(-limit))
+            if (limit < 1  || isNaN(limit) ) return res.status(422).send('Unprocessable Entity')
+        return res.send(messages.slice(-limit))
         }
         res.send(messages)
 
