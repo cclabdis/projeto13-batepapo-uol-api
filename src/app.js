@@ -128,7 +128,7 @@ server.post('/messages', async (req, res) => {
 
 server.get('/messages', async (req, res) => {
     const { user } = req.headers
-    const limit = Number(req.query.limit)
+    const limit = Number(req.param.limit)
 
     try{
         const messages = await db.collection("messages").find(
