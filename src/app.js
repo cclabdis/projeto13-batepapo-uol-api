@@ -128,7 +128,7 @@ server.post('/messages', async (req, res) => {
 
 server.get('/messages', async (req, res) => {
     const { user } = req.headers
-    const limit = Number(req.param.limit)
+    const limit = Number(req.query.limit)
 
     try{
         const messages = await db.collection("messages").find(
@@ -141,10 +141,10 @@ server.get('/messages', async (req, res) => {
             }
         ).limit(limit).toArray()
 
-        if (limit <= 0 || isNaN(limit) || limit === undefined || limit === null)  
-            return res.status(422).send('Unprocessable Entity')
+        if(limit){
+            if (limit <= 0 || isNaN(limit) )  
+                return res.status(422).send('Unprocessable Entity')
 
-        if(limit) {
             return res.send(messages.slice(-limit))
         }
         res.send(messages)
