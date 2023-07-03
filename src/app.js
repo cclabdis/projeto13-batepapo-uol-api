@@ -179,7 +179,7 @@ server.put('/status', async (req, res) => {
 
 
 setInterval (async () => {
-    const seconds = datenow - 100000
+    const seconds = datenow - 10000
     try{
        const inactives = await db.collection("participants").find({
         lastStatus: {$lte: seconds}
@@ -199,7 +199,7 @@ setInterval (async () => {
 
         })
         await db.collection("messages").insertMany(inactiveMessages)
-        await db.collection("participants").deleteMany(inactives)
+        await db.collection("participants").deleteMany({lastStatus: {$lte: seconds}})
         
        }
         
