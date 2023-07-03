@@ -19,6 +19,8 @@ const messagesSchema = joi.object({
 })
 
 const limitSchema = joi.number().min(1)
+const datenow = Date.now()
+
 
 const server = express();
 server.use(cors());
@@ -54,8 +56,7 @@ server.post('/participants', async (req, res) => {
         return res.status(422).send('Unprocessable Entity')
     }
 
-    const datenow = Date.now()
-
+   
     try {
         const duplicate = await db.collection("participants").findOne({ name: name })
         if (duplicate) {
@@ -157,9 +158,24 @@ server.get('/messages', async (req, res) => {
 
 });
 
-// server.post('/status', async (req, res) => {
+server.post('/status', async (req, res) => {
 
-// });
+    const {user} = req.headers
+
+    try{
+        const userExists = await db.collection("participants").findOne({ name: user })
+        if (!userExists) return res.status(404).send('Not Found')
+
+
+        await db.collection("participants").updateOne({ name: user }, { $set: {lastStatus: datenow }})
+        res.status(200).send('Created')
+
+    }catch(error) {
+        console.error(error)
+        res.sendStatus(500)
+    }
+
+});
 
 
 const PORT = 5000
